@@ -10,12 +10,12 @@ class MaxConcurrency {
         return Promise.all(allPromisesInSeries);
     }
 
-    async runInSeries({ promiseGenerationEnumerator, accumalatedValues }) {
+    async runInSeries({ promiseGenerationEnumerator, accumulatedValues }) {
         const nextPromiseGenerator = promiseGenerationEnumerator.next();
 
-        return nextPromiseGenerator.done ? accumalatedValues : await this.runInSeries({
+        return nextPromiseGenerator.done ? accumulatedValues : await this.runInSeries({
             promiseGenerationEnumerator,
-            accumalatedValues: (accumalatedValues || []).concat(await nextPromiseGenerator.value())
+            accumulatedValues: (accumulatedValues || []).concat(await nextPromiseGenerator.value())
         });
     }
 }
