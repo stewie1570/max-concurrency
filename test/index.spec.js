@@ -51,7 +51,7 @@ describe("Concurrency", () => {
             expect(Math.max(...await Concurrency.all({ promiseProviders, maxConcurrency: 3 }))).toBe(3);
         });
 
-        it("should default the concurrency limite to the number of promise providers", async () => {
+        it("should default the concurrency limit to the number of promise providers", async () => {
             var promisesInFlight = 0;
             var promiseProviders = arrayOfSize(10).map(n => async () => {
                 promisesInFlight++;
