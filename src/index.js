@@ -1,22 +1,26 @@
-const arrayOfSize = size => new Array(size).join('.').split('.');
-const flatMap = (array, lambda) => Array.prototype.concat.apply([], array.map(lambda || (n => n)));
+import _ from 'lodash'
 
 class MaxConcurrency {
     async all({ promiseProviders, maxConcurrency }) {
-        var promiseProviderEnumerator = promiseProviders[Symbol.iterator]();
-        const allRunInSeries = arrayOfSize(maxConcurrency || promiseProviders.length)
-            .map(n => this.runInSeries({ promiseProviderEnumerator }));
-        const allPromisesInSeries = flatMap(await Promise.all(allRunInSeries));
+        var numberedPromiseProviders = promiseProviders.map((promiseProvider, index) => ({ promiseProvider, index }));
+        var numberedPromiseProviderEnumerator = numberedPromiseProviders[Symbol.iterator]();
+        const allRunInSeries = _.range(maxConcurrency || numberedPromiseProviders.length)
+            .map(n => this.runInSeries({ numberedPromiseProviderEnumerator }));
 
-        return Promise.all(allPromisesInSeries);
+        return _(await Promise.all(allRunInSeries))
+            .flatMap()
+            .orderBy(({ index }) => index)
+            .map(({ value }) => value)
+            .value();
     }
 
-    async runInSeries({ promiseProviderEnumerator, accumulatedValues }) {
-        const nextPromiseProvider = promiseProviderEnumerator.next();
+    async runInSeries({ numberedPromiseProviderEnumerator, accumulatedValues }) {
+        const numberedValueFrom = async ({ promiseProvider, index }) => ({ index, value: await promiseProvider() });
+        const numberedPromiseProvider = numberedPromiseProviderEnumerator.next();
 
-        return nextPromiseProvider.done ? accumulatedValues : await this.runInSeries({
-            promiseProviderEnumerator,
-            accumulatedValues: (accumulatedValues || []).concat(await nextPromiseProvider.value())
+        return numberedPromiseProvider.done ? accumulatedValues : await this.runInSeries({
+            numberedPromiseProviderEnumerator,
+            accumulatedValues: (accumulatedValues || []).concat(await numberedValueFrom(numberedPromiseProvider.value))
         });
     }
 }

@@ -25,18 +25,31 @@ describe("Concurrency", () => {
             const resolvablePromises = [
                 manualResolvablePromiseFrom({ value: 1 }),
                 manualResolvablePromiseFrom({ value: 2 }),
-                manualResolvablePromiseFrom({ value: 3 })
+                manualResolvablePromiseFrom({ value: 3 }),
+                manualResolvablePromiseFrom({ value: 4 }),
+                manualResolvablePromiseFrom({ value: 5 }),
+                manualResolvablePromiseFrom({ value: 6 }),
+                manualResolvablePromiseFrom({ value: 7 }),
+                manualResolvablePromiseFrom({ value: 8 }),
+                manualResolvablePromiseFrom({ value: 9 })
             ];
 
             var whenAllResolved = Concurrency.all({
-                promiseProviders: resolvablePromises.map(resolvablePromise => () => resolvablePromise.promise)
+                promiseProviders: resolvablePromises.map(resolvablePromise => () => resolvablePromise.promise),
+                maxConcurrency: 3
             });
 
-            resolvablePromises[1].resolve();
+            resolvablePromises[3].resolve();
+            resolvablePromises[4].resolve();
             resolvablePromises[0].resolve();
+            resolvablePromises[8].resolve();
             resolvablePromises[2].resolve();
+            resolvablePromises[7].resolve();
+            resolvablePromises[6].resolve();
+            resolvablePromises[1].resolve();
+            resolvablePromises[5].resolve();
 
-            expect(await whenAllResolved).toEqual([1, 2, 3]);
+            expect(await whenAllResolved).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
         });
 
         it("should limit the concurrency", async () => {
