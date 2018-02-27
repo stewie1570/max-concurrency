@@ -1,0 +1,32 @@
+{
+  "name": "max-concurrency",
+  "version": "1.0.0",
+  "description": "Similar to Promise.all() but limits the number of promises in flight.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stewie1570/max-concurrency"
+  },
+  "main": "build/index.js",
+  "scripts": {
+    "test": "jest --coverage",
+    "tdd": "jest --watch",
+    "build": "npm run test && webpack"
+  },
+  "keywords": [
+    "async",
+    "concurrency",
+    "limit"
+  ],
+  "author": "Stewart Anderson",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.4.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "jest": "^22.4.0",
+    "regenerator-runtime": "^0.11.1",
+    "webpack": "^3.11.0"
+  },
+  "dependencies": {}
+}
