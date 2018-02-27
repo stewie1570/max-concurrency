@@ -1,5 +1,8 @@
 # max-concurrency
 
+[![Build](https://travis-ci.org/stewie1570/max-concurrency.svg)](https://travis-ci.org/stewie1570/max-concurrency)
+[![npm version](https://badge.fury.io/js/max-concurrency.svg)](https://badge.fury.io/js/max-concurrency)
+
 Sometimes you don't want to use Promise.all because sometimes you don't want all the promises you pass to it to be all in-flight at the same time. This package will let you do that. The only difference in the API _(other than the object & method name)_ is instead of passing the method an array of promises, you pass it an array of functions that return the promises. This way the package can control when the promises are fired off.
 
 ```jsx
