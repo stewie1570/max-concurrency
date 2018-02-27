@@ -7,7 +7,7 @@ Sometimes you don't want to use Promise.all because sometimes you don't want all
 
 ```jsx
 expect(await Concurrency.all({
-    promiseGenerators: [
+    promiseProviders: [
         () => Promise.resolve(1),
         () => Promise.resolve(2),
         () => Promise.resolve(3),

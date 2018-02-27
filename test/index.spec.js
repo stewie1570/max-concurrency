@@ -13,7 +13,7 @@ describe("Concurrency", () => {
     describe("Run all(...)", () => {
         it("should run all promise providers and return the results", async () => {
             expect(await Concurrency.all({
-                promiseGenerators: [
+                promiseProviders: [
                     () => willResolve(1),
                     () => willResolve(2),
                     () => willResolve(3)
@@ -29,7 +29,7 @@ describe("Concurrency", () => {
             ];
 
             var whenAllResolved = Concurrency.all({
-                promiseGenerators: resolvablePromises.map(resolvablePromise => () => resolvablePromise.promise)
+                promiseProviders: resolvablePromises.map(resolvablePromise => () => resolvablePromise.promise)
             });
 
             resolvablePromises[1].resolve();
@@ -41,14 +41,26 @@ describe("Concurrency", () => {
 
         it("should limit the concurrency", async () => {
             var promisesInFlight = 0;
-            var promiseGenerators = arrayOfSize(10).map(n => async () => {
+            var promiseProviders = arrayOfSize(10).map(n => async () => {
                 promisesInFlight++;
                 var ret = await willResolve(promisesInFlight);
                 promisesInFlight--;
                 return ret;
             });
 
-            expect(Math.max(...await Concurrency.all({ promiseGenerators, maxConcurrency: 3 }))).toBe(3);
+            expect(Math.max(...await Concurrency.all({ promiseProviders, maxConcurrency: 3 }))).toBe(3);
+        });
+
+        it("should default the concurrency limite to the number of promise providers", async () => {
+            var promisesInFlight = 0;
+            var promiseProviders = arrayOfSize(10).map(n => async () => {
+                promisesInFlight++;
+                var ret = await willResolve(promisesInFlight);
+                promisesInFlight--;
+                return ret;
+            });
+
+            expect(Math.max(...await Concurrency.all({ promiseProviders }))).toBe(10);
         });
     });
 });
