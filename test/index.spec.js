@@ -1,4 +1,5 @@
 import { Concurrency } from '../src/index'
+import { range } from 'lodash'
 
 const willResolve = value => new Promise((resolve, reject) => setTimeout(() => resolve(value), 0));
 const manualResolvablePromiseFrom = ({ value }) => {
@@ -7,7 +8,6 @@ const manualResolvablePromiseFrom = ({ value }) => {
 
     return { resolve, promise };
 }
-const arrayOfSize = size => new Array(size).join('.').split('.');
 
 describe("Concurrency", () => {
     describe("Run all(...)", () => {
@@ -54,7 +54,7 @@ describe("Concurrency", () => {
 
         it("should limit the concurrency", async () => {
             var promisesInFlight = 0;
-            var promiseProviders = arrayOfSize(10).map(n => async () => {
+            var promiseProviders = range(10).map(n => async () => {
                 promisesInFlight++;
                 var ret = await willResolve(promisesInFlight);
                 promisesInFlight--;
@@ -66,7 +66,7 @@ describe("Concurrency", () => {
 
         it("should default the concurrency limit to the number of promise providers", async () => {
             var promisesInFlight = 0;
-            var promiseProviders = arrayOfSize(10).map(n => async () => {
+            var promiseProviders = range(10).map(n => async () => {
                 promisesInFlight++;
                 var ret = await willResolve(promisesInFlight);
                 promisesInFlight--;

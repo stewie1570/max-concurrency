@@ -2,8 +2,8 @@ import _ from 'lodash'
 
 class MaxConcurrency {
     async all({ promiseProviders, maxConcurrency }) {
-        var numberedPromiseProviders = promiseProviders.map((promiseProvider, index) => ({ promiseProvider, index }));
-        var numberedPromiseProviderEnumerator = numberedPromiseProviders[Symbol.iterator]();
+        const numberedPromiseProviders = promiseProviders.map((promiseProvider, index) => ({ promiseProvider, index }));
+        const numberedPromiseProviderEnumerator = numberedPromiseProviders[Symbol.iterator]();
         const allRunInSeries = _.range(maxConcurrency || numberedPromiseProviders.length)
             .map(n => this.runInSeries({ numberedPromiseProviderEnumerator }));
 
