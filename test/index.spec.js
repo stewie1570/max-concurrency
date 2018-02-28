@@ -2,6 +2,7 @@ import { Concurrency } from '../src/index'
 import { range } from 'lodash'
 
 const willResolve = value => new Promise((resolve, reject) => setTimeout(() => resolve(value), 0));
+const willReject = value => new Promise((resolve, reject) => setTimeout(() => reject(value), 0));
 const manualResolvablePromiseFrom = ({ value }) => {
     var resolve = undefined;
     var promise = new Promise((resolver, reject) => { resolve = () => resolver(value); })
@@ -19,6 +20,37 @@ describe("Concurrency", () => {
                     () => willResolve(3)
                 ]
             })).toEqual([1, 2, 3]);
+        });
+
+        it("should throw when a promise rejects/throws", async () => {
+            var results, receivedError;
+            var theThrownError = new Error("some error");
+
+            try {
+                results = await Concurrency.all({
+                    promiseProviders: [
+                        () => willResolve(1),
+                        () => willReject(theThrownError),
+                        () => willResolve(3)
+                    ]
+                });
+            }
+            catch (error) {
+                receivedError = error;
+            }
+
+            expect(receivedError).toBe(theThrownError);
+        });
+
+        it("should allow mapping errored promises", async () => {
+            expect(await Concurrency.all({
+                promiseProviders: [
+                    () => willResolve(1),
+                    () => willReject(new Error("the error")),
+                    () => willResolve(3)
+                ],
+                mapErrors: ({ message }) => ({ errorMessage: message })
+            })).toEqual([1, { errorMessage: "the error" }, 3]);
         });
 
         it("should return in the order received (not in the order that the promises resoved in)", async () => {
