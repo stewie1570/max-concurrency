@@ -23,11 +23,11 @@ describe("Concurrency", () => {
         });
 
         it("should throw when a promise rejects/throws", async () => {
-            var results, receivedError;
+            var receivedError;
             var theThrownError = new Error("some error");
 
             try {
-                results = await Concurrency.all({
+                await Concurrency.all({
                     promiseProviders: [
                         () => willResolve(1),
                         () => willReject(theThrownError),
