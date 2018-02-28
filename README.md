@@ -29,9 +29,9 @@ This package also allows more control over error handling. Promise.all() will re
 ```jsx
 expect(await Concurrency.all({
     promiseProviders: [
-        () => willResolve(1),
-        () => willReject(new Error("the error")),
-        () => willResolve(3)
+        () => Promise.resolve(1),
+        () => Promise.reject(new Error("the error")),
+        () => Promise.resolve(3)
     ],
     mapErrors: ({ message }) => ({ errorMessage: message })
 })).toEqual([1, { errorMessage: "the error" }, 3]);
