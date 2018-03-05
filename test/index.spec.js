@@ -107,5 +107,16 @@ describe("Concurrency", () => {
 
             expect(Math.max(...await Concurrency.all({ promiseProviders }))).toBe(10);
         });
+
+        it("should allow less promise providers than the max concurrency limit", async () => {
+            expect(await Concurrency.all({
+                promiseProviders: [
+                    () => willResolve(1),
+                    () => willResolve(2),
+                    () => willResolve(3)
+                ],
+                maxConcurrency: 4
+            })).toEqual([1, 2, 3]);
+        });
     });
 });

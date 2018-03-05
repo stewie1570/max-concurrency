@@ -4,7 +4,8 @@ class MaxConcurrency {
     async all({ promiseProviders, maxConcurrency, mapErrors }) {
         const numberedPromiseProviders = promiseProviders.map((promiseProvider, index) => ({ promiseProvider, index }));
         const numberedPromiseProviderEnumerator = numberedPromiseProviders[Symbol.iterator]();
-        const allRunInSeries = _.range(maxConcurrency || numberedPromiseProviders.length)
+        const configuredConcurrencyLimit = maxConcurrency || numberedPromiseProviders.length;
+        const allRunInSeries = _.range(Math.min(configuredConcurrencyLimit, numberedPromiseProviders.length))
             .map(n => this.runInSeries({ numberedPromiseProviderEnumerator, mapErrors }));
 
         return _(await Promise.all(allRunInSeries))
