@@ -53,7 +53,7 @@ describe("Concurrency", () => {
             })).toEqual([1, { errorMessage: "the error" }, 3]);
         });
 
-        it("should return in the order received (not in the order that the promises resoved in)", async () => {
+        it("should return in the order received (not in the order that the promises resolved in)", async () => {
             const resolvablePromises = [
                 manualResolvablePromiseFrom({ value: 1 }),
                 manualResolvablePromiseFrom({ value: 2 }),
