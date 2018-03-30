@@ -8,6 +8,8 @@ Sometimes you don't want to use Promise.all because sometimes you don't want all
 
 
 ```jsx
+import { Concurrency } from 'max-concurrency'
+
 expect(await Concurrency.all({
     promiseProviders: [
         () => Promise.resolve(1),
