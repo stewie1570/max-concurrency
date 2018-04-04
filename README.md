@@ -12,9 +12,9 @@ import { Concurrency } from 'max-concurrency'
 
 expect(await Concurrency.all({
     promiseProviders: [
-        () => willResolve(1),
-        () => willResolve(2),
-        () => willResolve(3)
+        () => Promise.resolve(1),
+        () => Promise.resolve(2),
+        () => Promise.resolve(3)
     ]
 })).toEqual([1, 2, 3]);
 ```
