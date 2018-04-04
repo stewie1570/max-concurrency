@@ -12,18 +12,11 @@ import { Concurrency } from 'max-concurrency'
 
 expect(await Concurrency.all({
     promiseProviders: [
-        () => Promise.resolve(1),
-        () => Promise.resolve(2),
-        () => Promise.resolve(3),
-        () => Promise.resolve(4),
-        () => Promise.resolve(5),
-        () => Promise.resolve(6),
-        () => Promise.resolve(7),
-        () => Promise.resolve(8),
-        () => Promise.resolve(9)
-    ],
-    maxConcurrency: 3
-})).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        () => willResolve(1),
+        () => willResolve(2),
+        () => willResolve(3)
+    ]
+})).toEqual([1, 2, 3]);
 ```
 
 This package also allows more control over error handling. Promise.all() will reject/throw when it encounters an error (ie. a rejected promise). This package will default to that same behavior but will also allow you to define an error mapper. This will map errors to "errored values" in the results and this allows for the rest of the promises to continue.
@@ -38,3 +31,5 @@ expect(await Concurrency.all({
     mapErrors: ({ message }) => ({ errorMessage: message })
 })).toEqual([1, { errorMessage: "the error" }, 3]);
 ```
+
+Just like Promise.all, this package will return the resolved values in the same order as the array of promise providers passed to it (not the order that the promises resolved in).
