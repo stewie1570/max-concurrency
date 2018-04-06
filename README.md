@@ -17,7 +17,7 @@ expect(await Concurrency.all({
         () => Promise.resolve(3),
         () => Promise.resolve(4)
     ],
-    maxConcurrency: 4
+    maxConcurrency: 3
 })).toEqual([1, 2, 3]);
 ```
 
