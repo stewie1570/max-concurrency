@@ -14,8 +14,10 @@ expect(await Concurrency.all({
     promiseProviders: [
         () => Promise.resolve(1),
         () => Promise.resolve(2),
-        () => Promise.resolve(3)
-    ]
+        () => Promise.resolve(3),
+        () => Promise.resolve(4)
+    ],
+    maxConcurrency: 4
 })).toEqual([1, 2, 3]);
 ```
 
