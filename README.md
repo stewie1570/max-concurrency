@@ -18,7 +18,7 @@ expect(await Concurrency.all({
         () => Promise.resolve(4)
     ],
     maxConcurrency: 3
-})).toEqual([1, 2, 3]);
+})).toEqual([1, 2, 3, 4]);
 ```
 
 This package also allows more control over error handling. Promise.all() will reject/throw when it encounters an error (ie. a rejected promise). This package will default to that same behavior but will also allow you to define an error mapper. This will map errors to "errored values" in the results and this allows for the rest of the promises to continue.
