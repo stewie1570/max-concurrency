@@ -1,7 +1,26 @@
 import _ from 'lodash'
 
+type ErrorMapper = (error: any) => any;
+
+type PromiseProvider = () => Promise<any>;
+
+type MaxConcurrencyRequest = {
+    promiseProviders: Array<PromiseProvider>,
+    maxConcurrency?: number,
+    mapErrors?: ErrorMapper
+}
+
+type SeriesContext = {
+    numberedPromiseProviderEnumerator: IterableIterator<{
+        promiseProvider: PromiseProvider;
+        index: number;
+    }>,
+    accumulatedValues?: Array<any>,
+    mapErrors?: ErrorMapper
+}
+
 class MaxConcurrency {
-    async all({ promiseProviders, maxConcurrency, mapErrors }) {
+    async all({ promiseProviders, maxConcurrency, mapErrors }: MaxConcurrencyRequest) {
         const numberedPromiseProviders = promiseProviders.map((promiseProvider, index) => ({ promiseProvider, index }));
         const numberedPromiseProviderEnumerator = numberedPromiseProviders[Symbol.iterator]();
         const configuredConcurrencyLimit = maxConcurrency || numberedPromiseProviders.length;
@@ -15,16 +34,16 @@ class MaxConcurrency {
             .value();
     }
 
-    async runInSeries({ numberedPromiseProviderEnumerator, accumulatedValues, mapErrors }) {
-        const errorMappedValueFrom = async ({ promiseProvider }) => {
+    async runInSeries({ numberedPromiseProviderEnumerator, accumulatedValues, mapErrors }: SeriesContext): Promise<any> {
+        const errorMappedValueFrom = async ({ promiseProvider }: { promiseProvider: PromiseProvider }) => {
             try {
                 return await promiseProvider();
             }
             catch (error) {
-                return mapErrors(error);
+                return mapErrors && mapErrors(error);
             }
         }
-        const numberedValueFrom = async ({ promiseProvider, index }) => ({
+        const numberedValueFrom = async ({ promiseProvider, index }: { promiseProvider: PromiseProvider, index: number }) => ({
             index,
             value: mapErrors ? await errorMappedValueFrom({ promiseProvider }) : await promiseProvider()
         });

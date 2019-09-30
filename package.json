@@ -6,13 +6,12 @@
     "type": "git",
     "url": "https://github.com/stewie1570/max-concurrency"
   },
-  "main": "build/index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest --coverage --modulePathIgnorePatterns=lib/",
     "tdd": "jest --watch",
-    "build": "npm run test && webpack",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm run build"
+    "build": "yarn run test && del-cli ./lib && tsc",
+    "prepublishOnly": "yarn run build"
   },
   "keywords": [
     "async",
@@ -22,23 +21,20 @@
   "author": "Stewart Anderson",
   "license": "GPL-3.0",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-jest": "^22.4.4",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "jest": "^22.4.4",
-    "regenerator-runtime": "^0.11.1",
-    "webpack": "^3.12.0"
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-typescript": "^7.6.0",
+    "@types/jest": "^24.0.18",
+    "@types/lodash": "^4.14.141",
+    "babel-jest": "^24.9.0",
+    "del-cli": "^3.0.0",
+    "jest": "^24.9.0",
+    "typescript": "^3.6.3"
   },
   "dependencies": {
-    "babel-runtime": "^6.26.0",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.15"
   },
   "files": [
-    "build"
-  ],
-  "jest": {
-    "testURL": "http://localhost"
-  }
+    "lib"
+  ]
 }

@@ -1,4 +1,4 @@
-import { Concurrency } from '../src/index'
+import { Concurrency } from '.'
 import { range } from 'lodash'
 
 const willResolve = value => new Promise((resolve, reject) => setTimeout(() => resolve(value), 0));
