@@ -8,7 +8,7 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "test": "jest --coverage --modulePathIgnorePatterns=lib/",
+    "test": "jest --coverage --colors --modulePathIgnorePatterns=lib/",
     "tdd": "jest --watch",
     "build": "yarn run test && del-cli ./lib && tsc",
     "prepublishOnly": "yarn run build"
