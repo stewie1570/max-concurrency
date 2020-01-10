@@ -21,15 +21,15 @@
   "author": "Stewart Anderson",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
-    "@babel/preset-typescript": "^7.6.0",
-    "@types/jest": "^24.0.18",
-    "@types/lodash": "^4.14.144",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-typescript": "^7.7.7",
+    "@types/jest": "^24.0.25",
+    "@types/lodash": "^4.14.149",
     "babel-jest": "^24.9.0",
     "del-cli": "^3.0.0",
     "jest": "^24.9.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.4"
   },
   "dependencies": {
     "lodash": "^4.17.15"
