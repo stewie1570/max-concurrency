@@ -3,6 +3,7 @@
 [![Build](https://travis-ci.org/stewie1570/max-concurrency.svg)](https://travis-ci.org/stewie1570/max-concurrency)
 [![Codecov](https://img.shields.io/codecov/c/github/stewie1570/max-concurrency)](https://codecov.io/gh/stewie1570/max-concurrency)
 [![npm version](https://badge.fury.io/js/max-concurrency.svg)](https://badge.fury.io/js/max-concurrency)
+[![Package Size](https://badgen.net/bundlephobia/minzip/max-concurrency)](https://bundlephobia.com/result?p=max-concurrency)
 
 Sometimes you don't want to use Promise.all because sometimes you don't want all the promises you pass to it to be all in-flight at the same time. This package will allow you to limit how many promises are in-flight at the same time. The reason this API takes a list of promise providing functions is because if you passed it an array of promises, those promises would all already be in-flight.
 
