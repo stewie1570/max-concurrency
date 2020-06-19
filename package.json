@@ -10,8 +10,7 @@
   "scripts": {
     "test": "jest --coverage --colors --modulePathIgnorePatterns=lib/",
     "tdd": "jest --watch",
-    "build": "yarn run test && del-cli ./lib && tsc",
-    "prepublishOnly": "yarn run build"
+    "build": "del-cli ./lib && tsc"
   },
   "keywords": [
     "async",
@@ -24,12 +23,12 @@
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-typescript": "^7.7.7",
-    "@types/jest": "^24.0.25",
+    "@types/jest": "^26.0.0",
     "@types/lodash": "^4.14.149",
-    "babel-jest": "^24.9.0",
-    "del-cli": "^3.0.0",
-    "jest": "^24.9.0",
-    "typescript": "^3.7.4"
+    "babel-jest": "^26.0.1",
+    "del-cli": "^3.0.1",
+    "jest": "^26.0.1",
+    "typescript": "^3.9.5"
   },
   "dependencies": {
     "lodash": "^4.17.15"

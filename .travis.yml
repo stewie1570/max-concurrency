@@ -1,14 +1,17 @@
 language: node_js
 
 node_js:
-  - '8'
+  - '13.6.0'
   
 cache: yarn
 
-install:
-  - yarn install
-
-script: npm install codecov -g && yarn test
+script:
+  - npm install codecov -g
+  - yarn
+  - yarn test
+  - coveralls < coverage/lcov.info
+  - codecov
+  - yarn build
 
 deploy:
   provider: npm
@@ -18,6 +21,3 @@ deploy:
   on:
     tags: true
     all_branches: true
-
-after_success:
-  - codecov
