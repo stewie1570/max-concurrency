@@ -1,6 +1,6 @@
 {
   "name": "max-concurrency",
-  "version": "1.4.4",
+  "version": "1.5.1",
   "description": "Similar to Promise.all() but limits the number of promises in flight.",
   "repository": {
     "type": "git",
@@ -20,19 +20,16 @@
   "author": "Stewart Anderson",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.7.7",
-    "@babel/preset-typescript": "^7.7.7",
-    "@types/jest": "^26.0.0",
-    "@types/lodash": "^4.14.149",
+    "@babel/core": "^7.10.1",
+    "@babel/preset-env": "^7.10.1",
+    "@babel/preset-typescript": "^7.10.1",
+    "@types/jest": "^25.2.3",
     "babel-jest": "^26.0.1",
     "del-cli": "^3.0.1",
     "jest": "^26.0.1",
     "typescript": "^3.9.5"
   },
-  "dependencies": {
-    "lodash": "^4.17.15"
-  },
+  "dependencies": {},
   "files": [
     "lib"
   ]

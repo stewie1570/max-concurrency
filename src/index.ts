@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 type ErrorMapper = (error: any) => any;
 
 type PromiseProvider = () => Promise<any>;
@@ -19,19 +17,33 @@ type SeriesContext = {
     mapErrors?: ErrorMapper
 }
 
+type SortOptions = {
+    by: (obj: any) => number
+}
+
+const range = (from: number, to: number) => {
+    let buffer: Array<number> = [];
+    for (let index = from; index <= to; index++) {
+        buffer.push(index);
+    }
+    return buffer;
+}
+
+const sort = <T>(array: Array<T>, { by: numberFrom }: SortOptions): Array<T> =>
+    [...array].sort((left, right) => numberFrom(left) - numberFrom(right));
+
 class MaxConcurrency {
     async all({ promiseProviders, maxConcurrency, mapErrors }: MaxConcurrencyRequest) {
         const numberedPromiseProviders = promiseProviders.map((promiseProvider, index) => ({ promiseProvider, index }));
         const numberedPromiseProviderEnumerator = numberedPromiseProviders[Symbol.iterator]();
         const configuredConcurrencyLimit = maxConcurrency || numberedPromiseProviders.length;
-        const allRunInSeries = _.range(Math.min(configuredConcurrencyLimit, numberedPromiseProviders.length))
+        const allRunInSeries = range(0, Math.min(configuredConcurrencyLimit, numberedPromiseProviders.length) - 1)
             .map(n => this.runInSeries({ numberedPromiseProviderEnumerator, mapErrors }));
 
-        return _(await Promise.all(allRunInSeries))
-            .flatMap()
-            .orderBy(({ index }) => index)
-            .map(({ value }) => value)
-            .value();
+        return sort(
+            (await Promise.all(allRunInSeries)).flat(),
+            { by: ({ index }) => index })
+            .map(({ value }) => value);
     }
 
     async runInSeries({ numberedPromiseProviderEnumerator, accumulatedValues, mapErrors }: SeriesContext): Promise<any> {
