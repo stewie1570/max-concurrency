@@ -1,6 +1,6 @@
 {
   "name": "max-concurrency",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "Similar to Promise.all() but limits the number of promises in flight.",
   "repository": {
     "type": "git",
