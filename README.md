@@ -1,6 +1,6 @@
 # max-concurrency
 
-[![Build](https://travis-ci.org/stewie1570/max-concurrency.svg)](https://travis-ci.org/stewie1570/max-concurrency)
+[![Build](https://github.com/stewie1570/max-concurrency/workflows/Build/badge.svg)](https://github.com/stewie1570/max-concurrency/actions)
 [![Coverage Status](https://coveralls.io/repos/github/stewie1570/max-concurrency/badge.svg?branch=master)](https://coveralls.io/github/stewie1570/max-concurrency?branch=master)
 [![npm version](https://badge.fury.io/js/max-concurrency.svg)](https://badge.fury.io/js/max-concurrency)
 [![Package Size](https://badgen.net/bundlephobia/minzip/max-concurrency)](https://bundlephobia.com/result?p=max-concurrency)
