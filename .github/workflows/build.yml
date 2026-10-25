@@ -9,32 +9,66 @@ on:
     tags: v*
   pull_request:
     branches: [master]
-    
+
 jobs:
   build:
+    name: Build / Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [22.x]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v7
       with:
         node-version: ${{ matrix.node-version }}
-        registry-url: https://registry.npmjs.org/
-    - run: npm install codecov -g
-    - run: yarn
+        cache: yarn
+    - run: yarn install --frozen-lockfile
     - run: yarn build
     - run: yarn test
-    - name: CodeCov
-      run: codecov
     - name: Coveralls
-      uses: coverallsapp/github-action@master
+      uses: coverallsapp/github-action@v2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+  publish:
+    name: Publish to npm
+    needs: build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.publish.outputs.published }}
+      version: ${{ steps.publish.outputs.version }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+    steps:
+    - uses: actions/checkout@v7
+    - name: Use Node.js 22.x
+      uses: actions/setup-node@v7
+      with:
+        node-version: 22.x
+        registry-url: https://registry.npmjs.org/
+        cache: yarn
+    - run: yarn install --frozen-lockfile
+    - run: yarn build
     - name: Publish
-      if: startsWith(github.ref, 'refs/tags/')
-      run: npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+      id: publish
+      run: |
+        NAME=$(node -p "require('./package.json').name")
+        VERSION=$(node -p "require('./package.json').version")
+        if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+          echo "$NAME@$VERSION is already on npm; skipping publish."
+          echo "published=false" >> "$GITHUB_OUTPUT"
+        else
+          npm publish
+          echo "published=true" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        fi
+  publishedPackage:
+    name: Test published package
+    needs: publish
+    if: needs.publish.result == 'success' && needs.publish.outputs.published == 'true'
+    uses: ./.github/workflows/published-package-smoke.yml
+    with:
+      version: ${{ needs.publish.outputs.version }}
+      wait_for_registry: true

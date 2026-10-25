@@ -1,0 +1,71 @@
+# Installs a published max-concurrency release in a clean project, discovers that
+# version's public exports, imports each one through ESM and CommonJS, and
+# annotates each export's size. Exports are listed in alphabetical order.
+#
+# The Build workflow calls this after a tag publishes a new npm release.
+# It can also be run manually.
+
+name: Test published package
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: npm version or dist-tag (for example latest or 2.0.0)
+        required: false
+        default: latest
+        type: string
+      wait_for_registry:
+        description: Retry installation while a just-published release propagates
+        required: false
+        default: false
+        type: boolean
+  workflow_dispatch:
+    inputs:
+      version:
+        description: npm version or dist-tag (for example latest or 2.0.0)
+        required: false
+        default: latest
+        type: string
+
+jobs:
+  smoke:
+    name: Import published package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.x
+          registry-url: https://registry.npmjs.org/
+      - name: Install and import the published package
+        env:
+          PACKAGE_VERSION: ${{ inputs.version }}
+          WAIT_FOR_REGISTRY: ${{ inputs.wait_for_registry }}
+        run: |
+          if [[ ! "$PACKAGE_VERSION" =~ ^[A-Za-z0-9._+-]+$ ]]; then
+            echo "Invalid npm version or dist-tag: $PACKAGE_VERSION"
+            exit 1
+          fi
+          consumer="$RUNNER_TEMP/max-concurrency-consumer"
+          mkdir -p "$consumer"
+          cd "$consumer"
+          npm init -y
+          attempts=1
+          if [[ "$WAIT_FOR_REGISTRY" == "true" ]]; then
+            attempts=12
+          fi
+          for ((attempt = 1; attempt <= attempts; attempt++)); do
+            if npm install "max-concurrency@${PACKAGE_VERSION}" esbuild; then
+              break
+            fi
+            if [[ "$attempt" -eq "$attempts" ]]; then
+              echo "Failed to install max-concurrency@${PACKAGE_VERSION}"
+              exit 1
+            fi
+            echo "max-concurrency@${PACKAGE_VERSION} is not installable yet (attempt ${attempt}); retrying in 10s."
+            sleep 10
+          done
+          cp "$GITHUB_WORKSPACE/scripts/published-package-smoke.mjs" ./published-package-smoke.mjs
+          node ./published-package-smoke.mjs
