@@ -1,5 +1,6 @@
 import { Concurrency } from '.'
-import { range } from 'lodash'
+
+const range = (count: number) => Array.from({ length: count }, (_, index) => index);
 
 const willResolve = value => new Promise((resolve, reject) => setTimeout(() => resolve(value), 0));
 const willReject = value => new Promise((resolve, reject) => setTimeout(() => reject(value), 0));
